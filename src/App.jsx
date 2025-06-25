@@ -6,7 +6,6 @@ import Layout from './components/Layout'
 import injectContext from './store/appContext'
 
 function App() {
-
   return (
     <Layout />
   )
