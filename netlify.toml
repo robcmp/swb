@@ -1,16 +1,17 @@
+# netlify.toml
 [build]
-  command   = "npm run build"
-  publish   = "dist"
+  command = "npm run build"
+  publish = "dist"
 
-# 1) Redirect any “/api/people” → external URL
+# 1) Redirect ANY /api/<splat> → https://swapi.info/api/<splat>
 [[redirects]]
-  from     = "/api/people"
-  to       = "https://swapi.dev/api/people"
-  status   = 200
-  force    = true
+  from   = "/api/:splat"
+  to     = "https://swapi.info/api/:splat"
+  status = 200
+  force  = true
 
-# 2) Attach CORS header on that path
+# 2) Add CORS header to all those routes
 [[headers]]
-  for = "/api/people"
+  for = "/api/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
