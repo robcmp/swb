@@ -2,7 +2,15 @@
   command   = "npm run build"
   publish   = "dist"
 
+# 1) Redirect any “/api/people” → external URL
 [[redirects]]
-  from = "/*"
-  to   = "/index.html"
-  status = 200
+  from     = "/api/people"
+  to       = "https://swapi.dev/api/people"
+  status   = 200
+  force    = true
+
+# 2) Attach CORS header on that path
+[[headers]]
+  for = "/api/people"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
