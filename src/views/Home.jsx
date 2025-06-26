@@ -11,7 +11,7 @@ const Home = () => {
 
     // GET PEOPLE
     useEffect(() => {
-        fetch("https://swapi.info/api/people/", {
+        fetch("/.netlify/functions/api-proxy/people/", {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         }).then(response => response.json())
@@ -20,7 +20,7 @@ const Home = () => {
 
     // GET PLANETS
     useEffect(() => {
-        fetch("https://swapi.info/api/planets/", {
+        fetch("/.netlify/functions/api-proxy/planets/", {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         }).then(response => response.json())
@@ -29,7 +29,7 @@ const Home = () => {
 
     // GET VEHICLES
     useEffect(() => {
-        fetch("https://swapi.info/api/vehicles/", {
+        fetch("/.netlify/functions/api-proxy//vehicles/", {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         }).then(response => response.json())
