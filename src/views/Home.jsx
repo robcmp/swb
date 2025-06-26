@@ -1,62 +1,76 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import '../css/Home.css';
-import { useState, useEffect } from "react";
 import Card from "../components/Card";
 
 const Home = () => {
-    // STATES
-    const [planets, setPlanets] = useState([]);
-    const [peoples, setPeoples] = useState([]);
-    const [vehicles, setVehicles] = useState([]);
+  const [peoples, setPeoples]   = useState([]);
+  const [planets, setPlanets]   = useState([]);
+  const [vehicles, setVehicles] = useState([]);
 
-    // GET PEOPLE
-    useEffect(() => {
-        fetch("/.netlify/functions/api-proxy/people/", {
-            method: "GET",
-            headers: { "Content-Type": "application/json" }
-        }).then(response => response.json())
-            .then(data => setPeoples(data.results))
-    }, [])
+ const fetchResource = async (resource, setter) => {
+  const url = `/api/${resource}`;      // no trailing slash
+  console.log(`[fetchResource] Fetching →`, url);
 
-    // GET PLANETS
-    useEffect(() => {
-        fetch("/.netlify/functions/api-proxy/planets/", {
-            method: "GET",
-            headers: { "Content-Type": "application/json" }
-        }).then(response => response.json())
-            .then(data => setPlanets(data.results))
-    }, [])
+  try {
+    const res = await fetch(url);
+    console.log(`[fetchResource] ${resource} status:`, res.status, res.statusText);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    // GET VEHICLES
-    useEffect(() => {
-        fetch("/.netlify/functions/api-proxy/vehicles/", {
-            method: "GET",
-            headers: { "Content-Type": "application/json" }
-        }).then(response => response.json())
-            .then(data => setVehicles(data.results))
-    }, [])
+    const json = await res.json();
+    console.log(`[fetchResource] ${resource} JSON:`, json);
 
-    return (
-        <>
-            <div className="row">
-                <h1>Characters</h1>
-                <div className="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2 mb-4">
-                    {peoples.map((people, i) => <div className="col-md-3"><Card data={people} image="https://via.placeholder.com/400x200" /></div>)}
-                </div>
+    // if `json.results` is missing, fall back to the raw JSON
+    const payload = Array.isArray(json.results) 
+      ? json.results 
+      : (Array.isArray(json) ? json : []);
+    setter(payload);
+  } 
+  catch (err) {
+    console.error(`[fetchResource] Error loading ${resource}:`, err);
+    setter([]);
+  }
+};
+
+  useEffect(() => { fetchResource("people", setPeoples); }, []);
+  useEffect(() => { fetchResource("planets", setPlanets); }, []);
+  useEffect(() => { fetchResource("vehicles", setVehicles); }, []);
+
+  return (
+    <>
+      <section>
+        <h1>Characters</h1>
+        <div className="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2 mb-4">
+          {peoples.map((p, i) =>
+            <div key={i} className="col-md-3">
+              <Card data={p} image="https://via.placeholder.com/400x200" />
             </div>
-            <div className="row">
-                <h1>Planets</h1>
-                <div className="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2 mb-4">
-                    {planets.map((planet, i) => <div className="col-md-3"><Card data={planet} image="https://via.placeholder.com/400x200" /></div>)}
-                </div>
+          )}
+        </div>
+      </section>
+
+      <section>
+        <h1>Planets</h1>
+        <div className="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2 mb-4">
+          {planets.map((p, i) =>
+            <div key={i} className="col-md-3">
+              <Card data={p} image="https://via.placeholder.com/400x200" />
             </div>
-            <div className="row">
-                <h1>Vehicles</h1>
-                <div className="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2 mb-4">
-                    {vehicles.map((vehicle, i) => <div className="col-md-3"><Card data={vehicle} image="https://via.placeholder.com/400x200" /></div>)}
-                </div>
+          )}
+        </div>
+      </section>
+
+      <section>
+        <h1>Vehicles</h1>
+        <div className="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2 mb-4">
+          {vehicles.map((v, i) =>
+            <div key={i} className="col-md-3">
+              <Card data={v} image="https://via.placeholder.com/400x200" />
             </div>
-        </>
-    );
-}
+          )}
+        </div>
+      </section>
+    </>
+  );
+};
+
 export default Home;

@@ -6,13 +6,11 @@ export default defineConfig({
   server: {
     port: 5174,
     proxy: {
-      // intercept /.netlify/functions/* and forward to your lambda emulator
-      "/.netlify/functions": {
-        target: "http://localhost:9999",
+      "/api": {
+        target: "https://swapi.info/api",
         changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(/^\/\.netlify\/functions/, "")
-      },
-    },
-  },
+        rewrite: (path) => path.replace(/^\/api/, "")
+      }
+    }
+  }
 });
