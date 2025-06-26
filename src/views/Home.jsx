@@ -29,7 +29,7 @@ const Home = () => {
 
     // GET VEHICLES
     useEffect(() => {
-        fetch("/.netlify/functions/api-proxy//vehicles/", {
+        fetch("/.netlify/functions/api-proxy/vehicles/", {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         }).then(response => response.json())
